@@ -1,5 +1,7 @@
-(ns reagent-todomvc
-  (:require [reagent.core :as reagent :refer [atom]]))
+(ns reagent-todomvc.reagent-todomvc
+  (:require
+   [clojure.browser.repl]
+   [reagent.core :as reagent :refer [atom]]))
 
 (def todos (atom (sorted-map)))
 
@@ -24,12 +26,12 @@
 (complete-all true)
 
 (defn todo-input [{:keys [title on-save on-stop]}]
-  (let [val (atom title)
-        stop #(do (reset! val "")
-                  (if on-stop (on-stop)))
-        save #(let [v (-> @val str clojure.string/trim)]
-                (if-not (empty? v) (on-save v))
-                (stop))]
+(let [val (atom title)
+    stop #(do (reset! val "")
+              (if on-stop (on-stop)))
+    save #(let [v (-> @val str clojure.string/trim)]
+            (if-not (empty? v) (on-save v))
+            (stop))]
     (fn [props]
       [:input (merge props
                      {:type "text" :value @val :on-blur save
@@ -96,7 +98,7 @@
                                     :active (complement :done)
                                     :done :done
                                     :all identity) items)]
-                 ^{:key (:id todo)} [todo-item todo])]]
+                ^{:key (:id todo)} [todo-item todo])]]
              [:footer#footer
               [todo-stats {:active active :done done :filt filt}]]])]
          [:footer#info
